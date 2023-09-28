@@ -42,5 +42,9 @@ STRIPE_CANCEL_URL=      # Stripe cancel URL (e.g., http://localhost:3000/cancel)
 COOKIE_EXPIRE=          # Define cookie expiration time (e.g., 30d)
 JWT_SECRET=             # Your JWT secret key
 
+```
+
+3. Run the server
+```shell
 npm run dev
 ```
