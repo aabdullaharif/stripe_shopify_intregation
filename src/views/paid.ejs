@@ -1,0 +1,142 @@
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+        <title>Return Soon</title>
+        <style>
+            .table td {
+                padding-top: 16px;
+                padding-bottom: 16px;
+            }
+        </style>
+</head>
+
+<body>
+    <%- include('./partials/header') %>
+
+        <main class="container mt-5">
+            <div class="row mb-3">
+                <div class="col-12">
+                    <a href="/" class="text-dark"><i class="fa-solid fa-chevron-left"></i><span
+                            class="px-2">Back</span></a>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-12">
+                    <% if (paidResponses.length> 0) { %>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <td><strong>ID</strong></td>
+                                    <td><strong>Customer Name</strong></td>
+                                    <td><strong>First Item Url</strong></td>
+                                    <td><strong>Second Item Url</strong></td>
+                                    <td><strong>Submission Date</strong></td>
+                                    <td><strong>Actions</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% paidResponses.forEach(function(response, index) { %>
+                                    <tr>
+                                        <td class="pt-3">
+                                            <%= index + 1 %>
+                                        </td>
+                                        <td class="pt-3">
+                                            <%= response.firstName %>
+                                                <%= response.lastName %>
+                                        </td>
+                                        <td class="pt-3">
+                                            <%= response.items.secondItemUrl %>
+                                        </td>
+                                        <td class="pt-3">
+                                            <%= response.items.secondItemUrl %>
+                                        </td>
+                                        <td class="pt-3">
+                                            <% let date=new Date(response.createdAt); %>
+                                                <%= date.toDateString() %>
+                                                    <%= date.toLocaleTimeString() %>
+                                        </td>
+                                        <td class="pt-3">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <a href="javascript:void(0);"
+                                                    onclick="deleteResponse('<%= response._id %>');">
+                                                    <i class="text-danger fa-solid fa-trash"></i>
+                                                </a>
+                                                <a href="/page/response/<%= response._id %>">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                        <nav class="pt-3">
+                            <ul class="pagination justify-content-end">
+                                <% if (totalPages> 1) { %>
+                                    <!-- Previous Page Link -->
+                                    <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                                        <a class="page-link"
+                                            href="/page/<%= paid === true ? 'paid' : 'unpaid' %>?page=<%= currentPage - 1 %>"
+                                            tabindex="-1">Previous</a>
+                                    </li>
+
+                                    <!-- Pagination Links -->
+                                    <% for (let i=1; i <=totalPages; i++) { %>
+                                        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                            <a class="page-link"
+                                                href="/page/<%= paid === true ? 'paid' : 'unpaid' %>?page=<%= i %>">
+                                                <%= i %>
+                                            </a>
+                                        </li>
+                                        <% } %>
+
+                                            <!-- Next Page Link -->
+                                            <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                                                <a class="page-link"
+                                                    href="/page/<%= paid === true ? 'paid' : 'unpaid' %>?page=<%= currentPage + 1 %>">Next</a>
+                                            </li>
+                                            <% } %>
+
+                            </ul>
+                        </nav>
+                        <% } else { %>
+                            <h2 class="text-center text-uppercase">
+                                <%= paid===true ? 'No Paid Response' : 'No Unpaid Response' %>
+                            </h2>
+                            <% } %>
+
+
+                </div>
+            </div>
+        </main>
+
+
+        <%- include('./partials/scripts')%>
+            <script>
+                function deleteResponse(id) {
+                    if (confirm('Are you sure you want to delete this item?')) {
+                        const url = `/page/response/${id}`;
+
+                        fetch(url, {
+                            method: 'DELETE',
+                        })
+                            .then((response) => {
+                                if (response.ok) {
+                                    window.location.reload();
+                                } else {
+                                    alert('Delete operation failed.');
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                                alert('An error occurred while processing your request.');
+                            });
+                    }
+                }
+
+            </script>
+</body>
+
+</html>
